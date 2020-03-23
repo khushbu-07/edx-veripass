@@ -15,4 +15,5 @@ setup(
     packages=["edx_veripass"],
     description='Verificient veripass for student verification.',
     long_description=README,
+    include_package_data=True,
 )
