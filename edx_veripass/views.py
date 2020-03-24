@@ -11,7 +11,7 @@ from django.views.generic.base import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from .decorators import is_course_instructor
+from .decorators import is_student
 
 
 # Create your views here.
@@ -23,7 +23,7 @@ class VeriPassView(TemplateView):
     template_name = 'edx_veripass/veripass_dashboard.html'
 
     @method_decorator(login_required)
-    @is_course_instructor()
+    @is_student()
     def dispatch(self, request, *args, **kwargs):
         return super(VeriPassView, self).dispatch(request, *args, **kwargs)
 

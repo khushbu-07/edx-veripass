@@ -5,7 +5,7 @@ import functools
 from django.http import Http404
 
 
-def is_course_instructor():
+def is_student():
 
     def _decorator(func):
         """Outer method decorator."""

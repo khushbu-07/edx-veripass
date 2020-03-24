@@ -1,6 +1,11 @@
 
+
+
 # edx-veripass
-This is the student verification subsystem that used in exam proctoring subsystem for the Open edX platform.
+Veripass - Identity verification tool
+
+## Overview
+This is the student verification subsystem. This Python library provides the face and ID verificarion implementation used by Open edX.
 
 ## Dev Installation
 To install edx-veripass:
@@ -9,17 +14,21 @@ To install edx-veripass:
 
 `` $ source /edx/app/edxapp/edxapp_env ``
 
-`` $ pip install git+https://github.com/khushbu-07/edx-veripass.git@master ``
+`` $ pip install -e git+https://github.com/khushbu-07/edx-veripass.git@master#egg=edx-veripass ``
 
 
 
 ## Configuration
-1. You will need to add new flag `ENABLE_VERIPASS` in lms.env.json and cms.env.json FEATURES dictionary:
+1. You will need to add new flag **ENABLE_VERIPASS** in lms.env.json and cms.env.json FEATURES dictionary:
+```sh
+"FEATURES": {
+    :
+    "ENABLE_VERIPASS": true,
+    :
+}
+```
 
-2. Add flag in lms > envs > production.py.
-	`` ENABLE_VERIPASS = ENV_TOKENS.get('ENABLE_VERIPASS', False) ``
-
-3. Add url in urls.py above **plugin_urls**
+2. Add url in urls.py above **plugin_urls**
 ``` sh
 if settings.FEATURES.get('ENABLE_VERIPASS', False):
     urlpatterns += [  
@@ -27,7 +36,7 @@ if settings.FEATURES.get('ENABLE_VERIPASS', False):
   	] 
 ```
  
-4. Add link in header after `SysAdmin` 
+3. Add link in header after `SysAdmin` 
 
 File: edx-platform/lms/templates/header/navbar-authenticated.html
 
@@ -40,3 +49,17 @@ File: edx-platform/lms/templates/header/navbar-authenticated.html
     </div>  
 % endif
 ```
+
+4. You will need to restart services after these configuration changes for them to take effect.
+This verification tool is for students only.
+
+5. After restarting the service and login with student account, students can see  **Veripass**  link at header and can see verification too as shown below.
+
+ ![veripass dashboard](docs/images/edx-veripass.png) 
+
+<!-- <img src="edx-veripass.png"
+     alt="Markdown Monster icon"
+     style="float: left; margin-right: 10px; width: 500px; height: 300px;" /> -->
+
+## Getting Help
+Have a question about this repository, or about Open edX in general? Please refer to this [list of resources](https://open.edx.org/community/connect) if you need any assistance.
