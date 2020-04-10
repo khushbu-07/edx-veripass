@@ -2,14 +2,15 @@
 URLs for the Veripass API
 
 """
-from django.conf import settings
 from django.conf.urls import url
 
 from .views import (
-    VeriPassView
+    VeriPassView,
+    VeripassResultsCallback
 )
 app_name = 'edx_veripass'
 
 urlpatterns = [
     url(r'^veripass/$', VeriPassView.as_view(), name='veripass'),
+    url(r'^verified_results_callback$', VeripassResultsCallback.as_view(), name='veripass_results_callback'),
 ]

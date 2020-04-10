@@ -11,7 +11,7 @@ from django.utils.translation import ugettext as _
   <section role="main" class="content-primary">
       %if pt_dashboard_url:
           <h1>Veripass Dashboard</h1>
-          <iframe src="${pt_dashboard_url}" height="1280" style="width:100%"></iframe>
+          <iframe src="${pt_dashboard_url}" height="1280" style="width:100%" allow="camera;microphone"></iframe>
       %else:
           <h3 class="text-danger">You have not enabled the proctored exam in your platform. Please check the configuration.</h3>
       %endif
