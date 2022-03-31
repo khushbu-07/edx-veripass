@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 from lms.djangoapps.verify_student.models import ManualVerification
 
-class VeripassMiddleware(object):
+
+class VeripassMiddleware(MiddlewareMixin):
     """
     Middleware to show veripass to students.
 
@@ -13,7 +15,7 @@ class VeripassMiddleware(object):
     def process_request(self, request):
         show_veripass = False
 
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             user = request.user
             verification = ManualVerification.objects.filter(user=user)
 
