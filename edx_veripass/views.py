@@ -10,9 +10,9 @@ import datetime
 from django.urls import reverse
 from django.conf import settings
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
-from edxmako.paths import add_lookup
+from common.djangoapps.edxmako.paths import add_lookup
 from django.core.mail import send_mail
-from edxmako.shortcuts import render_to_response
+from common.djangoapps.edxmako.shortcuts import render_to_response
 from django.views.generic.base import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -25,7 +25,7 @@ from edx_rest_framework_extensions.auth.jwt.authentication import JwtAuthenticat
 from rest_framework.authentication import SessionAuthentication
 
 from opaque_keys.edx.keys import CourseKey
-from student.models import CourseEnrollment
+from common.djangoapps.student.models import CourseEnrollment
 from lms.djangoapps.verify_student.models import ManualVerification
 from lms.djangoapps.verify_student.tasks import send_verification_status_email
 
@@ -53,7 +53,7 @@ class VeriPassView(TemplateView):
         # check if proctortrack is enabled or not.
         if settings.FEATURES.get('ENABLE_SPECIAL_EXAMS', False) and settings.PROCTORING_BACKENDS['DEFAULT'] == 'proctortrack':
             # get course id from request and if exist then enroll student to verified track
-            course_id = urllib.unquote(urllib.quote_plus(request.GET.get('course_id', '')))
+            course_id = urllib.parse.unquote(urllib.parse.quote_plus(request.GET.get('course_id', '')))
             if course_id:
                 self.set_verified_enrollment_track(user, course_id)
 
@@ -116,9 +116,8 @@ class VeriPassView(TemplateView):
         """This will get existing enrollment track of requested user and course and set it to verified mode"""
         course_key = CourseKey.from_string(course_id)
         try:
-            enrollment = CourseEnrollment.objects.get(user=user)
-            # import pdb;pdb.set_trace()
-        except CourseEnrollment.DoesNotExists:
+            enrollment = CourseEnrollment.objects.filter(user=user, mode__in=['audit', 'honor']).last()
+        except CourseEnrollment.DoesNotExist:
             raise Http404
 
         if enrollment.mode.lower() != 'verified':
@@ -134,13 +133,12 @@ class VeripassResultsCallback(APIView):
         Veripass will call this callback to tell us whether a user is
         verified to be who they said they are.
         """
-        # import pdb;pdb.set_trace()
         body = request.body
 
         try:
             body_dict = json.loads(body)
         except ValueError:
-            log.exception("Invalid JSON received from Software Secure:\n\n{}\n".format(body))
+            log.exception("Invalid JSON received from Proctortrack:\n\n{}\n".format(body))
             return HttpResponseBadRequest("Invalid JSON. Received:\n\n{}".format(body))
 
         user_email = body_dict.get('user_email')
